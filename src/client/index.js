@@ -11,6 +11,7 @@ let ngModule = angular.module(
     ]
 );
 
+ngModule.value('currentUser', 'http://placeowl.com/64/64/one',);
 
 class Message {
     constructor (author, text) {
@@ -62,12 +63,13 @@ ngModule.service('TMessages', Messages);
 ngModule.controller('ChatCtrl', [
     '$scope',
     'TMessages',
-    function ($scope, tMessages) {
+    'currentUser',
+    function ($scope, tMessages, currentUser) {
         $scope.messages = tMessages;
         $scope.currentUserMessage = '';
         $scope.send = () => {
             $scope.messages.send(
-                'user',
+                currentUser,
                 $scope.currentUserMessage
             );
             $scope.currentUserMessage = '';
