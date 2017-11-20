@@ -14,13 +14,13 @@
     </style>
     </head>
     <body>
-        <div ng-controller="ChatCtrl" ng-cloak layout-gt-sm="row" layout="column">
+        <div ng-controller="ChatCtrl" ng-cloak layout="column">
             <md-content>
                 <t-messages messages="messages.items">
                 </t-messages>
                 <form name="userForm">
-                    <div layout-gt-sm="row">
-                        <md-input-container class="md-block">
+                    <div layout="row">
+                        <md-input-container class="md-block" style="width:100%">
                             <label>Message</label>
                             <textarea ng-model="currentUserMessage" md-maxlength="150" rows="5" md-select-on-focus></textarea>
                         </md-input-container>

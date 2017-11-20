@@ -88,11 +88,13 @@ ngModule.controller('ChatCtrl', [
         $scope.messages = tMessages;
         $scope.currentUserMessage = '';
         $scope.send = () => {
-            $scope.messages.send(
-                currentUser,
-                $scope.currentUserMessage
-            );
-            $scope.currentUserMessage = '';
+            if ($scope.currentUserMessage) {
+                $scope.messages.send(
+                    currentUser,
+                    $scope.currentUserMessage
+                );
+                $scope.currentUserMessage = '';
+            }
         };
         $scope.messages.loadHistory();
     }
