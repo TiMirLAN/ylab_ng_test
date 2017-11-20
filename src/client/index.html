@@ -7,6 +7,12 @@
                 <md-list flex>
                     <md-list-item class="md-3-line" ng-repeat="mess in messages.items" ng-click="null">
                         <span ng-bind="mess.text"></span>
+                        <img ng-src="{{mess.author}}" class="md-avatar"/>
+                        <md-progress-circular
+                            ng-disabled="mess.isSend"
+                            ng-if="!mess.isSend"
+                            class="md-hue-2"
+                            md-diameter="20px"></md-progress-circular>
                     </md-list-item>
                 </md-list>
                 <form name="userForm">
