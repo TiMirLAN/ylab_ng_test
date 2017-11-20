@@ -11,20 +11,37 @@ let ngModule = angular.module(
     ]
 );
 
-ngModule.value('currentUser', 'http://placeowl.com/64/64/one',);
+ngModule.value('currentUser', {
+    icon: 'http://placeowl.com/64/64/one',
+    name: 'CU',
+});
 
-class Message {
-    constructor (author, text) {
-        this.author = author;
-        this.text = text;
-        this.isSend = false;
+
+ngModule.factory('TMessage', [
+    '$q',
+    function ($q) {
+        class Message {
+            constructor (author, text) {
+                let defer = $q.defer()
+                this.author = author;
+                // Экранирование...
+                this.text = text.replace('<','').replace('>','');
+                this.isSend = false
+                this.whenSend = defer.promise;
+                this.ready = defer.resolve;
+                this.whenSend.then(() => {this.isSend=true});
+            }
+        }
+        return Message;
     }
-}
+]);
+
 
 class Messages {
-    constructor ($http, $timeout) {
+    constructor ($http, $timeout, $q, Message) {
         this._$http = $http;
         this._$timeout = $timeout;
+        this._Message = Message;
         this.items = [
         ];
     }
@@ -35,13 +52,13 @@ class Messages {
             .then((response) => {
                 response.data.forEach((item) => {
                     let msg = this.append(item.author, item.text);
-                    msg.isSend = true;
+                    msg.ready();
                 })
             });
     }
 
     append (user, text) {
-        let message = new Message(user, text);
+        let message = new this._Message(user, text);
         this.items.push(message);
         return message
     }
@@ -49,14 +66,17 @@ class Messages {
     send (user, text) {
         let message = this.append(user, text);
         this._$timeout(
-            () => {message.isSend = true;},
+            message.ready,
             1000 + Math.floor(Math.random()*1000),
+            message,
         )
     }
 }
 Messages.$inject = [
     '$http',
     '$timeout',
+    '$q',
+    'TMessage'
 ]
 ngModule.service('TMessages', Messages);
 
@@ -77,6 +97,53 @@ ngModule.controller('ChatCtrl', [
         $scope.messages.loadHistory();
     }
 ]);
+
+ngModule.directive('tMessages', function () { return {
+    scope: {
+        messages: '<'
+    },
+    controller: [
+        '$scope',
+        '$element',
+        '$compile',
+        function ($scope, $element, $compile) {
+            let messagesLength = 0;
+            let elem = $element[0];
+
+            const renderMessage = (message) => {
+                let tpl = `
+                <md-list-item class="md-3-line" ng-click="null">
+                    <img ng-src="${message.author.icon}" class="md-avatar"/>
+                    <div class="md-list-item-text" layout="column">
+                        <h4>${message.author.name}</h4>
+                        <p>${message.text}</p>
+                    </div>
+                    <md-progress-circular
+                        class="md-hue-2"
+                        md-diameter="20px"
+                    ></md-progress-circular>
+                </md-list-item>`
+
+                let rendered = $compile(tpl)($scope);
+                message.whenSend.then(()=> {
+                    rendered.find('md-progress-circular').detach();
+                });
+                $element.append(rendered);
+            }
+            $scope.$watch('messages', (messages) => {
+                if (messagesLength < messages.length) {
+                    let messagesToRender = messages.slice(
+                        messagesLength,
+                        messages.length,
+                    );
+                    messagesToRender.forEach(renderMessage);
+                }
+                messagesLength = messages.length;
+                elem.scrollTop = elem.scrollHeight;
+            }, true);
+        }
+    ]
+}});
 
 angular.element(document).ready(() => {
     angular.bootstrap(document.body, [ngModule.name]);

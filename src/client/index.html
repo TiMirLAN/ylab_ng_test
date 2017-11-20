@@ -1,20 +1,19 @@
 <!doctype html>
 <html>
-    <head></head>
+    <head>
+    <style type="text/css">
+        t-messages {
+            overflow-y: scroll;
+            height: 400px;
+            display: block;
+        }
+    </style>
+    </head>
     <body>
         <div ng-controller="ChatCtrl" ng-cloak layout-gt-sm="row" layout="column">
             <md-content>
-                <md-list flex>
-                    <md-list-item class="md-3-line" ng-repeat="mess in messages.items" ng-click="null">
-                        <span ng-bind="mess.text"></span>
-                        <img ng-src="{{mess.author}}" class="md-avatar"/>
-                        <md-progress-circular
-                            ng-disabled="mess.isSend"
-                            ng-if="!mess.isSend"
-                            class="md-hue-2"
-                            md-diameter="20px"></md-progress-circular>
-                    </md-list-item>
-                </md-list>
+                <t-messages messages="messages.items">
+                </t-messages>
                 <form name="userForm">
                     <div layout-gt-sm="row">
                         <md-input-container class="md-block">
