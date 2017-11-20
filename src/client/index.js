@@ -25,13 +25,28 @@ class Messages {
         this._$http = $http;
         this._$timeout = $timeout;
         this.items = [
-            new Message('Some', 'Text')
         ];
     }
 
-    send (user, text) {
+    loadHistory () {
+        this._$http
+            .get('assets/messages.json')
+            .then((response) => {
+                response.data.forEach((item) => {
+                    let msg = this.append(item.author, item.text);
+                    msg.isSend = true;
+                })
+            });
+    }
+
+    append (user, text) {
         let message = new Message(user, text);
         this.items.push(message);
+        return message
+    }
+
+    send (user, text) {
+        let message = this.append(user, text);
         this._$timeout(
             () => {message.isSend = true;},
             1000 + Math.floor(Math.random()*1000),
@@ -57,6 +72,7 @@ ngModule.controller('ChatCtrl', [
             );
             $scope.currentUserMessage = '';
         };
+        $scope.messages.loadHistory();
     }
 ]);
 
