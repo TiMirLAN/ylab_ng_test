@@ -11,6 +11,16 @@
         [ng-cloak] {
             display: none;
         }
+
+        /* Наверняка это можно сделать с помощью angular-material, но
+         документация не помогает. */
+        md-list-item.disabled {
+            background-color: #CFD8DC;
+        }
+        md-list-item.disabled .md-avatar,
+        md-list-item.disabled .md-list-item-text {
+            opacity: 0.7;
+        }
     </style>
     </head>
     <body>

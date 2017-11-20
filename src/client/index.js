@@ -119,7 +119,7 @@ ngModule.directive('tMessages', function () { return {
 
             const renderMessage = (message) => {
                 let tpl = `
-                <md-list-item class="md-3-line" ng-click="null">
+                <md-list-item class="md-3-line disabled" ng-click="null">
                     <img ng-src="${message.author.icon}" class="md-avatar"/>
                     <div class="md-list-item-text" layout="column">
                         <h4>${message.author.name}</h4>
@@ -134,6 +134,7 @@ ngModule.directive('tMessages', function () { return {
                 let rendered = $compile(tpl)($scope);
                 message.whenSend.then(()=> {
                     rendered.find('md-progress-circular').detach();
+                    rendered.removeClass('disabled');
                 });
                 $element.append(rendered);
             }
