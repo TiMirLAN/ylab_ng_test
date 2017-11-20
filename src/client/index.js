@@ -30,12 +30,11 @@ class Messages {
     }
 
     send (user, text) {
-        console.log(user,text);
         let message = new Message(user, text);
         this.items.push(message);
         this._$timeout(
+            () => {message.isSend = true;},
             1000 + Math.floor(Math.random()*1000),
-            () => {message.isSend = true;}
         )
     }
 }
