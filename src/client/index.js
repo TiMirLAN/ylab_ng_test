@@ -13,7 +13,7 @@ let ngModule = angular.module(
 
 ngModule.value('currentUser', {
     icon: 'http://placeowl.com/64/64/one',
-    name: 'CU',
+    name: 'Current Owl',
 });
 
 
