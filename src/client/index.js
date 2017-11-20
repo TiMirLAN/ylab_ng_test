@@ -26,10 +26,8 @@ ngModule.factory('TMessage', [
                 this.author = author;
                 // Тупое экранирование...
                 this.text = text.replace('<','').replace('>','');
-                this.isSend = false
                 this.whenSend = defer.promise;
                 this.ready = defer.resolve;
-                this.whenSend.then(() => {this.isSend=true});
             }
         }
         return Message;
