@@ -24,7 +24,7 @@ ngModule.factory('TMessage', [
             constructor (author, text) {
                 let defer = $q.defer()
                 this.author = author;
-                // Экранирование...
+                // Тупое экранирование...
                 this.text = text.replace('<','').replace('>','');
                 this.isSend = false
                 this.whenSend = defer.promise;
@@ -98,6 +98,11 @@ ngModule.controller('ChatCtrl', [
     }
 ]);
 
+// Такое решение было выбрано по причине низкой производительности ng-repeat
+// на больших списках. При большом количестве элементов списка создаётся
+// Много дочерних scope'ов и watcher'ов, количество перерисовок чата тоже
+// получается большим.
+// В angular-material есть md-virutal-repeat, но я с его спецификой и применением не знаком.
 ngModule.directive('tMessages', function () { return {
     scope: {
         messages: '<'
@@ -130,6 +135,10 @@ ngModule.directive('tMessages', function () { return {
                 });
                 $element.append(rendered);
             }
+
+            // Проверка изменения сообщений сделана простой, исходя
+            // из условий задачи. Изменения или удаления сообщений
+            // не подразумевается.
             $scope.$watch('messages', (messages) => {
                 if (messagesLength < messages.length) {
                     let messagesToRender = messages.slice(
