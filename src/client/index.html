@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+    <head></head>
+    <body>
+        <div ng-controller="ChatCtrl" ng-cloak layout-gt-sm="row" layout="column">
+            <md-content>
+                <md-list flex>
+                    <md-list-item class="md-3-line" ng-repeat="mess in messages.items" ng-click="null">
+                        <span ng-bind="mess.text"></span>
+                    </md-list-item>
+                </md-list>
+                <form name="userForm">
+                    <div layout-gt-sm="row">
+                        <md-input-container class="md-block">
+                            <label>Message</label>
+                            <textarea ng-model="currentUserMessage" md-maxlength="150" rows="5" md-select-on-focus></textarea>
+                        </md-input-container>
+                        <md-button class="md-raised md-primary" ng-click="send()">send</md-button>
+                    </div>
+                </form>
+            </md-content>
+        </div>
+    </body>
+</html>
